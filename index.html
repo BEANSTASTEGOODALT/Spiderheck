@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spiderheck</title>
+    <style>
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+      #unity-canvas { display: block; position: fixed; inset: 0; width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <canvas id="unity-canvas" width=960 height=600 style="background: #000000"></canvas>
+    <script>
+      window.PEERJS_HOST = window.PEERJS_HOST || undefined;
+      window.PEERJS_PORT = window.PEERJS_PORT || undefined;
+      window.PEERJS_PATH = window.PEERJS_PATH || undefined;
+      window.PEERJS_KEY = window.PEERJS_KEY || undefined;
+    </script>
+    <script src="StreamingAssets/peerjs.min.js"></script>
+    <script src="StreamingAssets/peer.js"></script>
+    <script src="Build/WebGL-Release.loader.js"></script>
+<script>
+  async function startGame() {
+    if ("serviceWorker" in navigator) {
+      await navigator.serviceWorker.register("./sw.js");
+      await navigator.serviceWorker.ready;
+
+      if (!navigator.serviceWorker.controller) {
+        window.location.reload();
+        return;
+      }
+    }
+
+    window.PEERJS_HOST = window.PEERJS_HOST || undefined;
+    window.PEERJS_PORT = window.PEERJS_PORT || undefined;
+    window.PEERJS_PATH = window.PEERJS_PATH || undefined;
+    window.PEERJS_KEY = window.PEERJS_KEY || undefined;
+
+    createUnityInstance(document.querySelector("#unity-canvas"), {
+      matchWebGLToCanvasSize: true,
+      dataUrl: "Build/WebGL-Release.data",
+      frameworkUrl: "Build/WebGL-Release.framework.js",
+      codeUrl: "Build/WebGL-Release.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "Neverjam Studio",
+      productName: "SPIDERHECK_DEMO",
+      productVersion: " 1.1 Demo of Heck"
+    }).then(instance => {
+      window.unityInstance = instance;
+    }).catch(error => {
+      console.error("Unity failed to initialize:", error);
+    });
+  }
+
+  startGame().catch(console.error);
+</script>
+  </body>
+</html>
